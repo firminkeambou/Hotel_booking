@@ -46,3 +46,7 @@ export const validatePasswordStrength = <
     );
   };
 };
+
+//lookup key right formated
+export const lookupKey = (stringToFormat: string) =>
+  stringToFormat?.toLowerCase()?.trim() ?? ''; //nullish coalescing operator (??)

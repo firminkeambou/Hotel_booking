@@ -1,15 +1,19 @@
 import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+//import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
 import FlexBox from '@/components/flexbox';
 import { PRIMARY_COLOR } from '@/constants';
 import CustomText from '@/components/custom-text';
 import RegisterForm from './_components/register-form';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import CustomSafeArea from '@/helpers/safe-area-context';
+//import { SafeAreaContext } from 'react-native-safe-area-context';
+
 type Props = {};
 
 const RegisterScreen = (props: Props) => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <CustomSafeArea>
       <KeyboardAvoidingView
         keyboardVerticalOffset={30}
         behavior="padding"
@@ -49,7 +53,7 @@ const RegisterScreen = (props: Props) => {
           </FlexBox>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </CustomSafeArea>
   );
 };
 

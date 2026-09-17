@@ -7,6 +7,7 @@ import {
   MD3DarkTheme,
   PaperProvider,
 } from 'react-native-paper';
+import { toastConfig } from '@/utils/toast-config';
 //import { useColorScheme } from 'react-native';
 //screenOptions={{ headerShown: false } in the <Stack> component means no default header for any screen, we will be having our own header
 export default function RootLayout() {
@@ -26,7 +27,7 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
-      <Toast />
+      <Toast config={toastConfig} />
     </PaperProvider>
   );
 }

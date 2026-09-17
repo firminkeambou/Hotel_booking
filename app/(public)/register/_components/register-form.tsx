@@ -8,9 +8,8 @@ import { useRouter } from 'expo-router';
 import CustomButton from '@/components/custom-button';
 import CustomText from '@/components/custom-text';
 import FlexBox from '@/components/flexbox';
-import { USER_ROLES } from '@/constants';
+import { USER_ROLES, REGISTRATION_ERRORS } from '@/constants';
 import {
-  normaliseUnit,
   validEmailFormat,
   PasswordMatchValidator,
   validatePasswordStrength,
@@ -20,6 +19,10 @@ import { EmailInput } from '@/components/email-input';
 import { GeneralInput } from '@/components/general-input';
 import { DropDownInput } from '@/components/dropdown-input';
 import { LoginIcon } from '@/components/login-button';
+import Toast from 'react-native-toast-message';
+import { registerUser } from '@/services/users';
+import LoadingModal from '@/components/modal-spinner';
+import { handleApiError } from '@/helpers/api-error-handler';
 
 export interface FormValues {
   // Add your other form fields here (e.g., email: string;)
@@ -30,9 +33,7 @@ export interface FormValues {
   confirmpassword: string;
 }
 export default function RegisterForm() {
-  // const [showPassword, setShowPassword] = useState<Boolean>(false); // only  for password field, so should be move in its own component
-  //const [confirmShowPassword, setConfirmShowPassword] =
-  //useState<Boolean>(false); // only  for password field, so should be move in its own component
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const router = useRouter();
   const {
     control,
@@ -47,7 +48,33 @@ export default function RegisterForm() {
       confirmpassword: '',
     },
   });
-  const onSubmit = (data: unknown) => console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      setSubmitting(true);
+      const response = await registerUser(data);
+      if (response.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Registration successful',
+        });
+      } else {
+        console.log(response);
+        handleApiError(
+          response.message,
+          REGISTRATION_ERRORS,
+          'Registration failed',
+        );
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Registration failed',
+        text2: (error as Error).message,
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <FlexBox gap={20} flex={1} backgroundColor={'white'}>
@@ -328,9 +355,14 @@ export default function RegisterForm() {
         }}
         placeholder="confirm password"
       />
-      <CustomButton onPress={handleSubmit(onSubmit)} mode="contained">
+      <CustomButton
+        disabled={submitting}
+        onPress={handleSubmit(onSubmit)}
+        mode="contained"
+      >
         Register
       </CustomButton>
+      <LoadingModal visible={submitting} message="submitting..." />
       <FlexBox
         flexDirection="row"
         justifyContent="center"
@@ -351,10 +383,3 @@ export default function RegisterForm() {
     </FlexBox>
   );
 }
-
-const styles = StyleSheet.create({
-  iconContainer: {
-    padding: 5,
-    zIndex: 1000,
-  },
-});

@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 import { Button, ButtonProps } from 'react-native-paper';
 //import { PropsWithChildren } from 'react';
 
-const CustomButton = ({ children, mode, onPress }: ButtonProps) => {
+const CustomButton = ({ children, mode, onPress, disabled }: ButtonProps) => {
   return (
     <Button
       style={{
@@ -13,10 +13,12 @@ const CustomButton = ({ children, mode, onPress }: ButtonProps) => {
         height: normaliseUnit(60),
         justifyContent: 'center',
         alignContent: 'center',
+       
       }}
       mode={mode || 'contained'}
       onPress={onPress}
-      buttonColor="#012f1f"
+      buttonColor={disabled ? '#84f1cb' : '#012f1f'} //
+      disabled={disabled}
     >
       <Text>{children}</Text>
     </Button>

@@ -5,11 +5,13 @@ import FlexBox from '@/components/flexbox';
 import { PRIMARY_COLOR } from '@/constants';
 import CustomText from '@/components/custom-text';
 import LoginForm from './_components/login-form';
+import CustomSafeArea from '@/helpers/safe-area-context';
+
 type Props = {};
 
 const RegisterScreen = (props: Props) => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <CustomSafeArea>
       <KeyboardAvoidingView
         keyboardVerticalOffset={30}
         behavior="padding"
@@ -42,14 +44,14 @@ const RegisterScreen = (props: Props) => {
               flex={1}
               backgroundColor="#ffffff"
               paddingHorizontal={30}
-              paddingVertical={50}
+              paddingVertical={100}
             >
               <LoginForm />
             </FlexBox>
           </FlexBox>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </CustomSafeArea>
   );
 };
 
