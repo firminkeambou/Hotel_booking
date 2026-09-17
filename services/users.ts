@@ -1,4 +1,4 @@
-import { supabaseConfig } from '@/config/supabase-config';
+import { supabaseConfig } from '@/api/supabase-config';
 import { IUser } from '@/interfaces';
 export const registerUser = async (payload: Partial<IUser>) => {
   try {
@@ -75,6 +75,8 @@ export const loginUser = async (payload: Partial<IUser>) => {
 };
 
 //get user dtails if there is a session which means the user was at least logged in once
+/* 
+Old implementation not caring a futur call in a hook with react-query
 export const getLoggedInUser = async () => {
   try {
     const {
@@ -108,6 +110,33 @@ export const getLoggedInUser = async () => {
       message: (error as Error).message || 'Failed to fetch logged in user',
     };
   }
+}; */
+
+// the below function, not like the previous one, is a pure service ready to be used by react query from @tanstack/react query
+export const getLoggedInUser = async () => {
+  // 1. Get the local session
+  const {
+    data: { session },
+    error: authError,
+  } = await supabaseConfig.auth.getSession();
+
+  if (authError) throw authError;
+  if (!session?.user) throw new Error('No active session found');
+
+  const email = session.user.email;
+
+  // 2. Fetch the deeper profile from your database table
+  const { data: profileData, error: dbError } = await supabaseConfig
+    .from('user_profiles')
+    .select('*')
+    .eq('email', email)
+    .single();
+
+  if (dbError) throw dbError; // Strictly throw to notify TanStack Query
+
+  // Return just the clean profile data structure
+  console.log('react query date--------', profileData);
+  return profileData;
 };
 
 export const logoutUser = async () => {

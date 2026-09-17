@@ -12,7 +12,7 @@ import CustomButton from '@/components/custom-button';
 import LoadingModal from '@/components/modal-spinner';
 import { logoutUser } from '@/services/users';
 import Toast from 'react-native-toast-message';
-import { useUsersStore } from '@/store/users-store';
+import { useUsersStore } from '@/store-zustand/users-store';
 
 type Props = {};
 

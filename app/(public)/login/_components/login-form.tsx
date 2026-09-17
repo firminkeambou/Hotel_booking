@@ -18,7 +18,7 @@ import Toast from 'react-native-toast-message';
 import { IUser } from '@/interfaces';
 import LoadingModal from '@/components/modal-spinner';
 // Import a store from zustand it's like context API, but mor powerful and light
-import { useUsersStore } from '@/store/users-store'; //  a store created using zustand
+import { useUsersStore } from '@/store-zustand/users-store'; //  a store created using zustand
 export interface FormValues {
   // Add your other form fields here (e.g., email: string;)
 
