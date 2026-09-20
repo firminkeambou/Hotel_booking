@@ -22,6 +22,10 @@ import { useUsersStore } from '@/store-zustand/users-store';
 import TabTitle from '@/components/tab-title';
 
 type Props = {};
+const formatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: 'full', // options: 'short', 'medium', 'long', 'full'
+  timeStyle: 'short',
+});
 
 const Profile = (props: Props) => {
   //const { data, loading, error } = useLocalSession<Partial<IUser>>();
@@ -115,7 +119,8 @@ const Profile = (props: Props) => {
               {renderUserPropertyValue('Role', user?.role || '')}
               {renderUserPropertyValue(
                 'Account Created At',
-                new Date(user?.created_at || '').toLocaleDateString(),
+                //new Date(user?.created_at || '').toLocaleDateString(),
+                formatter.format(new Date(user?.created_at || '')),
               )}
             </FlexBox>
           </FlexBox>
