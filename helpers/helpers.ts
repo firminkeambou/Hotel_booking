@@ -10,6 +10,12 @@ export const normaliseUnit = <T>(unit: T) => {
 
   return Platform.OS === 'android' ? unit * ANDROID_IOS_FACTOR : unit;
 };
+//date formatter
+export const formatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: 'full', // options: 'short', 'medium', 'long', 'full'
+  timeStyle: 'short',
+});
+
 // validate email format
 export const validEmailFormat = (email: string) =>
   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) ||

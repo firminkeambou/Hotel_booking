@@ -20,12 +20,9 @@ import { logoutUser } from '@/services/users';
 import Toast from 'react-native-toast-message';
 import { useUsersStore } from '@/store-zustand/users-store';
 import TabTitle from '@/components/tab-title';
+import { formatter } from '@/helpers/helpers';
 
 type Props = {};
-const formatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: 'full', // options: 'short', 'medium', 'long', 'full'
-  timeStyle: 'short',
-});
 
 const Profile = (props: Props) => {
   //const { data, loading, error } = useLocalSession<Partial<IUser>>();
