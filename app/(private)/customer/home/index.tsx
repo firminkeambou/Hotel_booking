@@ -1,30 +1,55 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import CustomSafeArea from '@/helpers/safe-area-context';
-import { View, StyleSheet } from 'react-native';
-import { useRouter, Stack, useNavigation } from 'expo-router';
+import { StyleSheet } from 'react-native';
+import { useNavigation } from 'expo-router';
 import { BackHandler, Alert, NativeEventSubscription } from 'react-native';
-
-//import { IUser } from '@/interfaces';
-//import { useLocalSession } from '@/hooks/user-session-hook';
-import FlexBox from '@/components/flexbox';
-import CustomText from '@/components/custom-text';
-import CustomButton from '@/components/custom-button';
-import LoadingModal from '@/components/modal-spinner';
-import { logoutUser } from '@/services/users';
-import Toast from 'react-native-toast-message';
-import { useUsersStore } from '@/store-zustand/users-store';
-
+import { BottomNavigation } from 'react-native-paper';
+import Hotels from './_components/hotels';
+import Bookings from './_components/bookings';
+import Report from './_components/report';
+import Profile from './_components/profile';
+import { useTheme } from 'react-native-paper';
+// material icons   focusedIcon: 'format-list-bulleted',     unfocusedIcon: 'format-list-bulleted-type',
+const tabsData = [
+  {
+    key: 'hotels',
+    title: 'Hotels',
+    focusedIcon: 'home-city',
+    unfocusedIcon: 'home-city-outline',
+  },
+  {
+    key: 'bookings',
+    title: 'Bookings',
+    focusedIcon: 'book-open-page-variant',
+    unfocusedIcon: 'book-open-page-variant-outline',
+  },
+  {
+    key: 'report',
+    title: 'Report',
+    focusedIcon: 'chart-box',
+    unfocusedIcon: 'chart-box-outline',
+  },
+  {
+    key: 'profile',
+    title: 'Profile',
+    focusedIcon: 'account-circle',
+    unfocusedIcon: 'account-circle-outline',
+  },
+];
 type Props = {};
 
 const CustomerHomeScreen = (props: Props) => {
-  //const { data, loading, error } = useLocalSession<Partial<IUser>>();
-  //const user = useUsersStore((state) => state.user);
-  //const isLoggedIn = useUsersStore((state) => state.isLoggedIn);
   const navigation = useNavigation();
-  const { user, isLoggedIn, logout } = useUsersStore();
-  const [loggingOut, setLoggingOut] = React.useState<boolean>(false);
-  const router = useRouter();
-
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState(tabsData);
+  const theme = useTheme();
+  //below is the matching between routes and components
+  const renderScene = BottomNavigation.SceneMap({
+    hotels: Hotels,
+    bookings: Bookings,
+    report: Report,
+    profile: Profile,
+  });
   useEffect(() => {
     // Check if navigation is focused to prevent unexpected triggers on other screens
     const handleBackPress = (): boolean => {
@@ -45,66 +70,24 @@ const CustomerHomeScreen = (props: Props) => {
 
     return () => backHandler.remove();
   }, [navigation]); // Added navigation to dependency array to prevent stale closures
-  //console.log('useLocalSession Data', data);
-  console.log('Zustand store  Data', user, '-----', isLoggedIn);
-  const onLogout = async () => {
-    setLoggingOut(true);
-    const { success, message } = await logoutUser();
-    if (success) {
-      Toast.show({
-        type: 'success',
-        text1: message,
-      });
-      logout();
-      router.replace('/(public)/login');
-    } else {
-      Toast.show({
-        type: 'error',
-        text1: 'Error logging out',
-        text2: message,
-      });
-      setLoggingOut(false);
-    }
-    setLoggingOut(false);
-  };
 
   return (
-    <CustomSafeArea>
-      <Stack.Screen
-        options={{
-          gestureEnabled: false, // Forces iOS native thread to ignore the back-swipe
-        }}
-      />
-      <FlexBox
-        flex={1}
-        gap={15}
-        paddingHorizontal={20}
-        justifyContent={'center'}
-      >
-        {!isLoggedIn && (
-          <CustomText
-            value={'Not authorized or not logged in...'}
-            textAlign="center"
-          />
-        )}
-        {/* {error && <CustomText value={`Error: ${error}`} />} */}
-        {isLoggedIn && (
-          <>
-            <CustomText value={`Welcome, ${user?.name}`} textAlign="center" />
-            <CustomText value={`Email, ${user?.email}`} textAlign="center" />
+    <BottomNavigation
+      navigationState={{ index, routes }}
+      onIndexChange={setIndex}
+      renderScene={renderScene}
+      barStyle={{
+        backgroundColor: '#e9e9e9',
+        //backgroundColor: theme.colors.primary,
+        borderTopColor: 'gray',
+        borderTopWidth: 0.5,
 
-            <CustomButton
-              disabled={loggingOut}
-              onPress={onLogout}
-              mode="contained"
-            >
-              Logout
-            </CustomButton>
-            <LoadingModal visible={loggingOut} message="Logging out..." />
-          </>
-        )}
-      </FlexBox>
-    </CustomSafeArea>
+        zIndex: 100,
+      }}
+      shifting={true}
+      activeColor={theme.colors.primary}
+      activeIndicatorStyle={{ backgroundColor: 'transparent' }}
+    />
   );
 };
 
