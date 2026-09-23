@@ -1,11 +1,10 @@
 import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, ScrollView } from 'react-native';
 import FlexBox from '@/components/flexbox';
 import { PRIMARY_COLOR } from '@/constants';
 import CustomText from '@/components/custom-text';
 import LoginForm from './_components/login-form';
-import CustomSafeArea from '@/helpers/safe-area-context';
+import CustomSafeArea from '@/components/safe-area-context';
 
 type Props = {};
 

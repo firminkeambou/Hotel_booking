@@ -56,3 +56,8 @@ export const validatePasswordStrength = <
 //lookup key right formated
 export const lookupKey = (stringToFormat: string) =>
   stringToFormat?.toLowerCase()?.trim() ?? ''; //nullish coalescing operator (??)
+
+
+export const capitalizeFirstLetter = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};

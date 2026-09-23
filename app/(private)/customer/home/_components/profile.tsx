@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import CustomSafeArea from '@/helpers/safe-area-context';
+import CustomSafeArea from '@/components/safe-area-context';
 import {
   View,
   StyleSheet,
@@ -8,7 +8,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { useRouter, Stack, useNavigation } from 'expo-router';
-import { BackHandler, Alert, NativeEventSubscription } from 'react-native';
+//import { BackHandler, Alert, NativeEventSubscription } from 'react-native';
 
 //import { IUser } from '@/interfaces';
 //import { useLocalSession } from '@/hooks/user-session-hook';
@@ -21,6 +21,7 @@ import Toast from 'react-native-toast-message';
 import { useUsersStore } from '@/store-zustand/users-store';
 import TabTitle from '@/components/tab-title';
 import { formatter } from '@/helpers/helpers';
+import { ProgressiveImage } from '@/components/image-progressive-loading';
 
 type Props = {};
 
@@ -102,10 +103,16 @@ const Profile = (props: Props) => {
             }}
           >
             <FlexBox alignItems="center" gap={15}>
-              <Image
+              <ProgressiveImage
+                uri={user?.profile_picture!}
+                width={100}
+                height={100}
+                borderRadius={50}
+              />
+              {/* <Image
                 source={{ uri: user?.profile_picture }}
                 style={{ width: 100, height: 100, borderRadius: 50 }}
-              />
+              /> */}
               <CustomButton mode="outlined" buttonColor="white">
                 <CustomText value="Change Profile Picture" fontWeight="bold" />
               </CustomButton>
@@ -117,7 +124,9 @@ const Profile = (props: Props) => {
               {renderUserPropertyValue(
                 'Account Created At',
                 //new Date(user?.created_at || '').toLocaleDateString(),
-                formatter.format(new Date(user?.created_at || '')),
+                user?.created_at
+                  ? formatter.format(new Date(user?.created_at || ''))
+                  : '',
               )}
             </FlexBox>
           </FlexBox>

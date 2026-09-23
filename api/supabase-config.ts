@@ -26,7 +26,7 @@ const customFetchWithTimeout = async (
   }
 };
 
-export const supabaseConfig = createClient(
+export const supabase = createClient(
   process.env.EXPO_PUBLIC_SUPABASE_URL!, // A TypeScript-specific operator. It tells the compiler, "I guarantee this variable has a value and is not null or undefined.
   process.env.EXPO_PUBLIC_SUPABASE_KEY!,
   {

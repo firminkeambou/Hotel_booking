@@ -1,9 +1,9 @@
-import { supabaseConfig } from '@/api/supabase-config';
+import { supabase } from '@/api/supabase-config';
 import { IUser } from '@/interfaces';
 export const registerUser = async (payload: Partial<IUser>) => {
   try {
     // step 1 : create authentication record
-    const authResponse = await supabaseConfig.auth.signUp({
+    const authResponse = await supabase.auth.signUp({
       email: payload.email || '',
       password: payload.password || '',
     });
@@ -11,7 +11,7 @@ export const registerUser = async (payload: Partial<IUser>) => {
       throw authResponse.error;
     }
     // step 2 : insert user profile in database
-    const dbResponse = await supabaseConfig.from('user_profiles').insert([
+    const dbResponse = await supabase.from('user_profiles').insert([
       {
         name: payload.name,
         email: payload.email,
@@ -39,7 +39,7 @@ export const registerUser = async (payload: Partial<IUser>) => {
 export const loginUser = async (payload: Partial<IUser>) => {
   try {
     // step 1 : authenticate user
-    const authResponse = await supabaseConfig.auth.signInWithPassword({
+    const authResponse = await supabase.auth.signInWithPassword({
       email: payload.email || '',
       password: payload.password || '',
     });
@@ -51,7 +51,7 @@ export const loginUser = async (payload: Partial<IUser>) => {
     const email = user?.email;
 
     // step 2 : fetch full user profile from database
-    const dbResponse = await supabaseConfig
+    const dbResponse = await supabase
       .from('user_profiles')
       .select('*')
       .eq('email', email)
@@ -82,14 +82,14 @@ export const getLoggedInUser = async () => {
     const {
       data: { session },
       error,
-    } = await supabaseConfig.auth.getSession(); // supabase runs it from the local storage
+    } = await supabase.auth.getSession(); // supabase runs it from the local storage
     if (error) {
       throw error;
     }
     const user = session?.user;
     const email = user?.email;
 
-    const dbResponse = await supabaseConfig
+    const dbResponse = await supabase
       .from('user_profiles')
       .select('*')
       .eq('email', email)
@@ -118,7 +118,7 @@ export const getLoggedInUser = async () => {
   const {
     data: { session },
     error: authError,
-  } = await supabaseConfig.auth.getSession();
+  } = await supabase.auth.getSession();
 
   if (authError) throw authError;
   if (!session?.user) throw new Error('No active session found');
@@ -126,7 +126,7 @@ export const getLoggedInUser = async () => {
   const email = session.user.email;
 
   // 2. Fetch the deeper profile from your database table
-  const { data: profileData, error: dbError } = await supabaseConfig
+  const { data: profileData, error: dbError } = await supabase
     .from('user_profiles')
     .select('*')
     .eq('email', email)
@@ -141,7 +141,7 @@ export const getLoggedInUser = async () => {
 
 export const logoutUser = async () => {
   try {
-    await supabaseConfig.auth.signOut();
+    await supabase.auth.signOut();
     //router.replace(fallBackRoute);
     return {
       success: true,

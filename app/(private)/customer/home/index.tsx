@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import CustomSafeArea from '@/helpers/safe-area-context';
+import CustomSafeArea from '@/components/safe-area-context';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from 'expo-router';
 import { BackHandler, Alert, NativeEventSubscription } from 'react-native';
@@ -52,6 +52,7 @@ const CustomerHomeScreen = (props: Props) => {
   });
   useEffect(() => {
     // Check if navigation is focused to prevent unexpected triggers on other screens
+
     const handleBackPress = (): boolean => {
       if (navigation.isFocused()) {
         Alert.alert('Are you sure you want to exit the app?', '', [

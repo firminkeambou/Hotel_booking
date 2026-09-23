@@ -12,7 +12,7 @@ interface TabTitleProps {
 
 const TabTitle = (props: TabTitleProps) => {
   return (
-    <FlexBox gap={3}>
+    <FlexBox gap={3} paddingVertical={10}>
       <CustomText
         value={props.title}
         fontSize={normaliseUnit(25)}

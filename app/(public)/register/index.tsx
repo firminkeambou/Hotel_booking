@@ -5,8 +5,8 @@ import FlexBox from '@/components/flexbox';
 import { PRIMARY_COLOR } from '@/constants';
 import CustomText from '@/components/custom-text';
 import RegisterForm from './_components/register-form';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import CustomSafeArea from '@/helpers/safe-area-context';
+//import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import CustomSafeArea from '@/components/safe-area-context';
 //import { SafeAreaContext } from 'react-native-safe-area-context';
 
 type Props = {};

@@ -35,6 +35,7 @@ export interface FlexBoxProps extends ViewProps {
   padding?: ViewStyle['padding'];
   paddingHorizontal?: ViewStyle['paddingHorizontal'];
   paddingVertical?: ViewStyle['paddingVertical'];
+  paddingTop?: ViewStyle['paddingTop'];
   margin?: ViewStyle['margin'];
   marginHorizontal?: ViewStyle['marginHorizontal'];
   marginVertical?: ViewStyle['marginVertical'];
@@ -79,6 +80,7 @@ const FlexBox = ({
   padding,
   paddingHorizontal,
   paddingVertical,
+  paddingTop,
   margin,
   marginHorizontal,
   marginVertical,
@@ -121,6 +123,7 @@ const FlexBox = ({
           paddingHorizontal:
             paddingHorizontal && normaliseUnit(paddingHorizontal),
           paddingVertical: paddingVertical && normaliseUnit(paddingVertical),
+          paddingTop: paddingTop && normaliseUnit(paddingTop),
           margin: margin && normaliseUnit(margin),
           marginHorizontal: marginHorizontal && normaliseUnit(marginHorizontal),
           marginVertical: marginVertical && normaliseUnit(marginVertical),

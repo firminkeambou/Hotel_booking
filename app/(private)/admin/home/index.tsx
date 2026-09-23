@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import CustomSafeArea from '@/helpers/safe-area-context';
+import CustomSafeArea from '@/components/safe-area-context';
 import { View, StyleSheet, Text, NativeEventSubscription } from 'react-native';
 import { useRouter, Stack, useNavigation } from 'expo-router';
 import { BackHandler, Alert, Platform } from 'react-native';

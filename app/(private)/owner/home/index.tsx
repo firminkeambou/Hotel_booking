@@ -1,4 +1,4 @@
-import CustomSafeArea from '@/helpers/safe-area-context';
+import CustomSafeArea from '@/components/safe-area-context';
 import React from 'react';
 
 import { View, StyleSheet, Text } from 'react-native';
