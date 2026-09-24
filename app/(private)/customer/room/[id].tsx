@@ -19,7 +19,7 @@ import { ProgressiveImage } from '@/components/image-progressive-loading';
 
 type Props = {};
 
-const RoomDetail = (props: Props) => {
+const RoomDetailScreen = (props: Props) => {
   const params = useLocalSearchParams();
   const theme = useTheme();
   const router = useRouter();
@@ -133,6 +133,7 @@ const RoomDetail = (props: Props) => {
                 fontSize={14}
                 fontColor="#6c6c6c"
                 fontWeight="bold"
+                textAlign="justify"
               />
             </FlexBox>
 
@@ -216,7 +217,7 @@ const RoomDetail = (props: Props) => {
   );
 };
 
-export default RoomDetail;
+export default RoomDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
