@@ -1,7 +1,7 @@
 import FlexBox from '@/components/flexbox';
 import { useRoomById } from '@/hooks/react-query/rooms-hooks';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from 'react-native-paper';
 import { Divider, Icon } from 'react-native-paper';
 import {
@@ -12,20 +12,26 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomText from '@/components/custom-text';
 import CustomSafeArea from '@/components/safe-area-context';
 import { capitalizeFirstLetter, normaliseUnit } from '@/helpers/helpers';
 import { ProgressiveImage } from '@/components/image-progressive-loading';
+import AvailabilityCheck from './_components/availability-check';
+import FinaliseBooking from './_components/finalise-booking';
 
 type Props = {};
 
 const RoomDetailScreen = (props: Props) => {
+  const insets = useSafeAreaInsets();
   const params = useLocalSearchParams();
   const theme = useTheme();
   const router = useRouter();
   const roomId = params.id as string;
   const { data: room, isLoading: isRoomLoading } = useRoomById(roomId);
   let imageUrl = room?.images && room.images.length > 0 ? room.images[0] : null;
+  const [selectedDates, setSelectedDates] = useState<string[] | null>(null);
+  const [isRoomAvailable, setIsRoomAvailable] = useState<boolean>(false);
   // room && console.log('roommmmmm==========', room);
   const renderRoomProperty = (
     label: string,
@@ -49,7 +55,7 @@ const RoomDetailScreen = (props: Props) => {
   };
 
   return (
-    <CustomSafeArea>
+    <CustomSafeArea style={{ marginBottom: insets.bottom }}>
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
@@ -209,6 +215,23 @@ const RoomDetailScreen = (props: Props) => {
                 fontColor={theme.colors.primary}
                 fontWeight="bold"
               />
+              {!isRoomAvailable && (
+                <AvailabilityCheck
+                  roomId={room.id.toString()}
+                  setIsRoomAvailable={setIsRoomAvailable}
+                  setSelectedDates={setSelectedDates}
+                  selectedDates={selectedDates}
+                />
+              )}
+              {isRoomAvailable && (
+                <FinaliseBooking
+                  room={room}
+                  isRoomAvailable
+                  setIsRoomAvailable={setIsRoomAvailable}
+                  setSelectedDates={setSelectedDates}
+                  selectedDates={selectedDates}
+                />
+              )}
             </FlexBox>
           </FlexBox>
         )}

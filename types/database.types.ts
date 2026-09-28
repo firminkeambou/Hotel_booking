@@ -14,6 +14,73 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          booked_dates: string[] | null
+          check_in_date: string | null
+          check_out_date: string | null
+          created_at: string
+          customer_id: number | null
+          hotel_id: string | null
+          id: string
+          owner_id: number | null
+          payment_id: string | null
+          room_id: string | null
+          status: string | null
+          total_amount: number | null
+        }
+        Insert: {
+          booked_dates?: string[] | null
+          check_in_date?: string | null
+          check_out_date?: string | null
+          created_at?: string
+          customer_id?: number | null
+          hotel_id?: string | null
+          id?: string
+          owner_id?: number | null
+          payment_id?: string | null
+          room_id?: string | null
+          status?: string | null
+          total_amount?: number | null
+        }
+        Update: {
+          booked_dates?: string[] | null
+          check_in_date?: string | null
+          check_out_date?: string | null
+          created_at?: string
+          customer_id?: number | null
+          hotel_id?: string | null
+          id?: string
+          owner_id?: number | null
+          payment_id?: string | null
+          room_id?: string | null
+          status?: string | null
+          total_amount?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: true
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: true
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hotels: {
         Row: {
           address: string | null

@@ -11,7 +11,10 @@ import { useTheme } from 'react-native-paper';
 import { getLoggedInUser } from '@/services/users';
 import { lookupKey } from '@/helpers/helpers';
 import { useCurrentProfile } from '@/hooks/react-query/users-hooks';
+import { LogBox } from 'react-native';
 
+// Suppress the warning while keeping the react-native-modal working perfectly
+LogBox.ignoreLogs(['InteractionManager has been deprecated']);
 export default function Index() {
   const setUser = useUsersStore((state) => state.setUser);
   const { data, isLoading, isError } = useCurrentProfile(); // finalising implementation with react query

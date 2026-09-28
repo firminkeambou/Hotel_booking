@@ -11,7 +11,7 @@ create table public.hotels (
   description text null,
   city text null,
   address text null,
-  email  CITEXT UNIQUE NOT NULL, --text null,
+  email  CITEXT UNIQUE NOT NULL, --text null; no capital letter at the beginning,
   phone text null,
   images text[] null,
   status text null,

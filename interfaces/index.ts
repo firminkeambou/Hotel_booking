@@ -28,6 +28,7 @@ export interface IUser {
 } */
 export type IHotel = Database['public']['Tables']['hotels']['Row'];
 export type IRoom = Database['public']['Tables']['rooms']['Row'];
+export type IBookings = Database['public']['Tables']['bookings']['Row'];
 /* export interface IRoom {
   id: string; // UUID
   created_at: string; // ISO 8601 timestamp string (TIMESTAMPTZ)

@@ -14,6 +14,39 @@ import {
 } from '@tanstack/react-query'; // mandatory to wrap the app with QueryClientProvider to provide the react-query context, otherwise, react-query won't work
 
 import { toastConfig } from '@/utils/toast-config';
+/////////////////////////////////////////////////////
+//dealing with language for datePicker
+////////////////////////////////////////////////////////////
+import { Platform } from 'react-native';
+import { registerTranslation, en, fr, es, de } from 'react-native-paper-dates';
+import * as Localization from 'expo-localization';
+// 1. Map your imported language packs to a lookup object
+// Explicitly type the object to allow string indexing
+const supportedLocales: Record<string, any> = { en, fr, es, de };
+
+// 2. Detect the device language code
+let languageCode = 'en'; // Fallback language
+
+if (Platform.OS === 'web') {
+  languageCode = navigator.language.split('-')[0];
+} else {
+  languageCode = Localization.getLocales()[0].languageCode ?? 'en';
+  /*   const { getLocales } = require('react-native-localize');
+  const deviceLocales = getLocales();
+  if (deviceLocales && deviceLocales.length > 0) {
+    languageCode = deviceLocales[0].languageCode; // e.g., 'fr', 'en', 'es'
+  } */
+}
+
+// 3. Register the detected language (or fall back to English if unsupported)
+const localeToRegister = supportedLocales[languageCode] ? languageCode : 'en';
+registerTranslation(localeToRegister, supportedLocales[localeToRegister]);
+
+// 4. Export the final locale string to pass into the DatePicker component
+export const appLocale = localeToRegister;
+////////////////////////////////////////////////
+//end wit dealing with language for datePicker
+////////////////////////////////////////////////////////////
 
 export const queryClient = new QueryClient({
   defaultOptions: {
