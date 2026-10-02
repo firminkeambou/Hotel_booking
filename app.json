@@ -36,7 +36,8 @@
       ],
       "expo-status-bar",
       "expo-web-browser",
-      "expo-localization"
+      "expo-localization",
+      "@stripe/stripe-react-native"
     ],
     "experiments": {
       "typedRoutes": true

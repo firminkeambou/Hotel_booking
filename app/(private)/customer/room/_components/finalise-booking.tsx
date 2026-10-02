@@ -6,6 +6,8 @@ import FlexBox from '@/components/flexbox';
 import CustomButton from '@/components/custom-button';
 import dayjs from 'dayjs';
 import CustomText from '@/components/custom-text';
+import { callStripeBackend } from '@/services/stripe/payments';
+import Toast from 'react-native-toast-message';
 
 type Props = {
   room: IRoom;
@@ -22,6 +24,7 @@ const FinaliseBooking = ({
   selectedDates,
   isRoomAvailable,
 }: Props) => {
+  const [makingPayment, setMakingPayment] = React.useState(false);
   const onReset = () => {
     setSelectedDates(null);
     setIsRoomAvailable(false);
@@ -43,6 +46,32 @@ const FinaliseBooking = ({
       totalAmount: 0,
     };
   }, [selectedDates, room.rent_per_day]);
+  const onMakePayment = async () => {
+    try {
+      setMakingPayment(true);
+      console.log('hellojj');
+      const response: any = await callStripeBackend(roomBillDetail.totalAmount); // this is usually convert intoo cent except you did the conversion in the backend
+      if (!response.success) {
+        Toast.show({
+          type: 'error',
+          text1: 'Payment Failed',
+          text2: response.error,
+        });
+        return;
+      }
+      console.log(response);
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Payment Failed',
+        text2:
+          'An error occured while processig your payment. please try again',
+      });
+      setMakingPayment(false);
+    } finally {
+      setMakingPayment(false);
+    }
+  };
   return (
     <FlexBox gap={20}>
       <View style={{ flex: 1 }}>
@@ -94,7 +123,7 @@ const FinaliseBooking = ({
           />
         </FlexBox>
       </FlexBox>
-      <CustomButton onPress={() => {}} buttonColor={'#cc582a'}>
+      <CustomButton onPress={onMakePayment} buttonColor={'#cc582a'}>
         Make Payment & Book
       </CustomButton>
       <CustomButton onPress={onReset} buttonColor="transparent" mode="outlined">
