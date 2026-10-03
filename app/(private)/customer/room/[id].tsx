@@ -19,7 +19,7 @@ import { capitalizeFirstLetter, normaliseUnit } from '@/helpers/helpers';
 import { ProgressiveImage } from '@/components/image-progressive-loading';
 import AvailabilityCheck from './_components/availability-check';
 import FinaliseBooking from './_components/finalise-booking';
-
+import { StripeProvider } from '@stripe/stripe-react-native'; // only when payment
 type Props = {};
 
 const RoomDetailScreen = (props: Props) => {
@@ -224,13 +224,19 @@ const RoomDetailScreen = (props: Props) => {
                 />
               )}
               {isRoomAvailable && (
-                <FinaliseBooking
-                  room={room}
-                  isRoomAvailable
-                  setIsRoomAvailable={setIsRoomAvailable}
-                  setSelectedDates={setSelectedDates}
-                  selectedDates={selectedDates}
-                />
+                <StripeProvider
+                  publishableKey={
+                    process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+                  }
+                >
+                  <FinaliseBooking
+                    room={room}
+                    isRoomAvailable
+                    setIsRoomAvailable={setIsRoomAvailable}
+                    setSelectedDates={setSelectedDates}
+                    selectedDates={selectedDates}
+                  />
+                </StripeProvider>
               )}
             </FlexBox>
           </FlexBox>

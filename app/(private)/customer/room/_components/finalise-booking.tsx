@@ -7,7 +7,9 @@ import CustomButton from '@/components/custom-button';
 import dayjs from 'dayjs';
 import CustomText from '@/components/custom-text';
 import { callStripeBackend } from '@/services/stripe/payments';
+
 import Toast from 'react-native-toast-message';
+import { useStripe } from '@stripe/stripe-react-native';
 
 type Props = {
   room: IRoom;
@@ -25,6 +27,7 @@ const FinaliseBooking = ({
   isRoomAvailable,
 }: Props) => {
   const [makingPayment, setMakingPayment] = React.useState(false);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe(); // using stripe
   const onReset = () => {
     setSelectedDates(null);
     setIsRoomAvailable(false);
@@ -59,7 +62,39 @@ const FinaliseBooking = ({
         });
         return;
       }
-      console.log(response);
+      //console.log(response);
+      const data = response.data;
+      const initResponse = await initPaymentSheet({
+        paymentIntentClientSecret: data.clientSecret,
+        merchantDisplayName: 'Booking Hotel App',
+        customerId: data.customer,
+        customerEphemeralKeySecret: data.ephemeralKey,
+      });
+      if (initResponse.error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Payment Failed',
+          text2: initResponse.error.message,
+        });
+        return;
+      }
+      const presentResponse = await presentPaymentSheet();
+
+      if (presentResponse.error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Payment Failed',
+          text2: presentResponse.error.message,
+        });
+        return;
+      }
+
+      Toast.show({
+        type: 'success',
+        text1: 'Payment Successful',
+        text2: 'Your room has been booked successfully!',
+      });
+      //handle save booking
     } catch (error) {
       Toast.show({
         type: 'error',

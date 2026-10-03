@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-hotel-rooms-bookingg",
-    "slug": "expo-hotel-rooms-bookingg",
+    "name": "hotelBooking",
+    "slug": "hotelBooking",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -17,7 +17,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.freemanexpo.expohotelroomsbooking"
     },
     "web": {
       "bundler": "metro",
@@ -37,10 +38,23 @@
       "expo-status-bar",
       "expo-web-browser",
       "expo-localization",
-      "@stripe/stripe-react-native"
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.hotelBooking",
+          "enableGooglePay": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3bde17fb-c987-464f-b009-a436e4de778c"
+      }
+    },
+    "owner": "freemanexpo"
   }
 }
