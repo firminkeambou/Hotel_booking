@@ -8,7 +8,7 @@ import CustomSafeArea from '@/components/safe-area-context';
 
 type Props = {};
 
-const RegisterScreen = (props: Props) => {
+const LoginScreen = (props: Props) => {
   return (
     <CustomSafeArea>
       <KeyboardAvoidingView
@@ -54,4 +54,4 @@ const RegisterScreen = (props: Props) => {
   );
 };
 
-export default RegisterScreen;
+export default LoginScreen;

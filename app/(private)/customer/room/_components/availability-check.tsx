@@ -93,9 +93,12 @@ const AvailabilityCheck = ({
     datesRequired.push(dayjs(date).format('YYYY-MM-DD'));
     datesRequired.push(dayjs(checkOutDate).format('YYYY-MM-DD'));
     console.log('datesRequired--------', datesRequired, ' ', roomId);
-    setSelectedDates(datesRequired);
+    setSelectedDates(datesRequired); // this will trigger the useRoomCheckAvailability hook to fetch availability
   };
-
+  //dealing with the case when the user changes the dates and the room is not available,
+  /* if (bookings?.length !== 0 && isSuccess) {
+    setIsCheckingAvalaibily(!isCheckingAvalaibily);
+  } */
   return (
     <FlexBox gap={20}>
       <View style={{ flex: 1 }}>

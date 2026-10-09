@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
-
+import { useUsersStore } from '@/store-zustand/users-store';
 import { View, StyleSheet, Text } from 'react-native';
 import { IRoom } from '@/interfaces';
 import FlexBox from '@/components/flexbox';
@@ -7,9 +7,10 @@ import CustomButton from '@/components/custom-button';
 import dayjs from 'dayjs';
 import CustomText from '@/components/custom-text';
 import { callStripeBackend } from '@/services/stripe/payments';
-
+import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { useStripe } from '@stripe/stripe-react-native';
+import { saveBooking } from '@/services/bookings';
 
 type Props = {
   room: IRoom;
@@ -28,6 +29,8 @@ const FinaliseBooking = ({
 }: Props) => {
   const [makingPayment, setMakingPayment] = React.useState(false);
   const { initPaymentSheet, presentPaymentSheet } = useStripe(); // using stripe
+  const { user } = useUsersStore();
+  const router = useRouter();
   const onReset = () => {
     setSelectedDates(null);
     setIsRoomAvailable(false);
@@ -64,6 +67,7 @@ const FinaliseBooking = ({
       }
       //console.log(response);
       const data = response.data;
+      //before presenting the payment sheet, we need to initialize it with the client secret and other details
       const initResponse = await initPaymentSheet({
         paymentIntentClientSecret: data.clientSecret,
         merchantDisplayName: 'Booking Hotel App',
@@ -78,6 +82,7 @@ const FinaliseBooking = ({
         });
         return;
       }
+      // Now present the payment sheet to the user
       const presentResponse = await presentPaymentSheet();
 
       if (presentResponse.error) {
@@ -95,6 +100,41 @@ const FinaliseBooking = ({
         text2: 'Your room has been booked successfully!',
       });
       //handle save booking
+      const bookingDates = [];
+      for (
+        let dat = dayjs(selectedDates![0]);
+        dat.isBefore(dayjs(selectedDates![1]));
+        dat = dat.add(1, 'day')
+      ) {
+        bookingDates.push(dayjs(dat).format('YYYY-MM-DD'));
+      }
+      const saveBookingResponse = await saveBooking({
+        room_id: room.id,
+        hotel_id: room.hotel_id,
+        booked_dates: bookingDates,
+        check_in_date: dayjs(selectedDates![0]).format('YYYY-MM-DD'),
+        check_out_date: dayjs(selectedDates![1]).format('YYYY-MM-DD'),
+        status: 'confirmed',
+        total_amount: roomBillDetail.totalAmount,
+        payment_id: data.paymentIntentId,
+        customer_id: user?.id, // Assuming you have a user object with an id property
+        owner_id: room.owner_id,
+      });
+      if (!saveBookingResponse.success) {
+        Toast.show({
+          type: 'error',
+          text1: 'Booking Failed',
+          text2: saveBookingResponse.error,
+        });
+        router.push('/(private)/customer/home');
+        return;
+      }
+      console.log('Booking saved successfully:', saveBookingResponse.data);
+      Toast.show({
+        type: 'success',
+        text1: 'Booking confirmed',
+        text2: 'Your room has been booked successfully!',
+      });
     } catch (error) {
       Toast.show({
         type: 'error',

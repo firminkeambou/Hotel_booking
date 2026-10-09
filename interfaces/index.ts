@@ -1,5 +1,5 @@
 import { Database } from '@/types/database.types';
-export interface IUser {
+/* export interface IUser {
   id: string;
   name: string;
   password: string;
@@ -8,7 +8,7 @@ export interface IUser {
   is_active: boolean;
   profile_picture: string;
   created_at: string;
-}
+} */
 
 /* export interface IHotel {
   id: string; // UUID
@@ -26,9 +26,11 @@ export interface IUser {
   amenities: string[] | null;
   starting_rent: number; // NUMERIC
 } */
+export type IUser = Database['public']['Tables']['user_profiles']['Row'];
 export type IHotel = Database['public']['Tables']['hotels']['Row'];
 export type IRoom = Database['public']['Tables']['rooms']['Row'];
 export type IBookings = Database['public']['Tables']['bookings']['Row'];
+export type IBookingWithDetails = IBookings & { room?: IRoom; hotel?: IHotel };
 /* export interface IRoom {
   id: string; // UUID
   created_at: string; // ISO 8601 timestamp string (TIMESTAMPTZ)

@@ -87,7 +87,7 @@ export default function Index() {
 
     // 3. Success State: 'data' is now fully loaded and guaranteed to exist
     setUser(data); // If you still need it in global context/state
-
+    // defining the routes for each role
     const routes = {
       customer: '/(private)/customer/home',
       owner: '/(private)/owner/home',
