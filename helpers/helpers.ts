@@ -1,6 +1,7 @@
-import { ANDROID_IOS_FACTOR } from '@/constants';
+import { ANDROID_IOS_FACTOR, PRIMARY_COLOR } from '@/constants';
 import { FieldValues, Validate } from 'react-hook-form';
 import { Platform } from 'react-native';
+import dayjs from 'dayjs';
 //the reference os focused on is ios
 export const normaliseUnit = <T>(unit: T) => {
   if (typeof unit !== 'number' || !Number.isInteger(unit)) {
@@ -57,7 +58,23 @@ export const validatePasswordStrength = <
 export const lookupKey = (stringToFormat: string) =>
   stringToFormat?.toLowerCase()?.trim() ?? ''; //nullish coalescing operator (??)
 
-
 export const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
+};
+// dealing with
+export const getStatusColor = (status?: string) => {
+  switch (status) {
+    case 'confirmed':
+      return '#4CAF50';
+    case 'pending':
+      return '#FF9800';
+    case 'cancelled':
+      return '#F44336';
+    default:
+      return PRIMARY_COLOR;
+  }
+};
+export const formatDate = (dateString?: string) => {
+  if (!dateString) return 'N/A';
+  return dayjs(dateString).format('MMM DD, YYYY');
 };

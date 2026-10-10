@@ -35,6 +35,34 @@
           "backgroundColor": "#ffffff"
         }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to set your profile pictue",
+          "colors": {
+            "cropToolbarColor": "#000000"
+          },
+          "dark": {
+            "colors": {
+              "cropToolbarColor": "#000000"
+            }
+          }
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraResources": {
+              "expoCropToolbarColor": "#212121",
+              "expoCropToolbarIconColor": "#ffffff",
+              "expoCropToolbarActionTextColor": "#ffffff",
+              "expoCropBackButtonIconColor": "#ffffff",
+              "expoCropBackgroundColor": "#111111"
+            }
+          }
+        }
+      ],
       "expo-status-bar",
       "expo-web-browser",
       "expo-localization",
@@ -44,7 +72,8 @@
           "merchantIdentifier": "merchant.com.hotelBooking",
           "enableGooglePay": true
         }
-      ]
+      ],
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true

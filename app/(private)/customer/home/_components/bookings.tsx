@@ -1,24 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import FlexBox from '@/components/flexbox';
 import TabTitle from '@/components/tab-title';
 import { useRoomBookings } from '@/hooks/react-query/bookings-hooks';
 import { useUsersStore } from '@/store-zustand/users-store';
-import { Divider, Icon } from 'react-native-paper';
-import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import { useBookingStore } from '@/store-zustand/booking-store';
+import { StyleSheet, Text, ScrollView } from 'react-native';
 import BookingCard from './booking-card';
 import CustomText from '@/components/custom-text';
 type Props = {};
 
 const Bookings = (props: Props) => {
-  const router = useRouter();
   const { user } = useUsersStore();
   const {
     data: bookings,
@@ -27,7 +19,15 @@ const Bookings = (props: Props) => {
     isSuccess,
     isError,
   } = useRoomBookings(user?.id ?? 100000000000); // Use the actual userId or a default value
-  bookings && console.log('===bookings===', bookings.length);
+  const setBooking = useBookingStore((state) => state.setBooking);
+  //bookings && console.log('===bookings===', bookings.length);
+  useEffect(() => {
+    if (!bookings) {
+      return;
+    }
+    setBooking(bookings);
+  }, [bookings]);
+  //bookings && setBooking(bookings);
   return (
     <ScrollView
       contentContainerStyle={{
@@ -70,7 +70,7 @@ const Bookings = (props: Props) => {
               backgroundColor: '#fff',
               paddingBottom: 70,
             }}
-            gap={25}
+            gap={40}
           >
             {/* Back Button */}
             {/*             <TouchableOpacity

@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 import { useRouter, Stack, useNavigation } from 'expo-router';
 //import { BackHandler, Alert, NativeEventSubscription } from 'react-native';
@@ -22,6 +23,8 @@ import { useUsersStore } from '@/store-zustand/users-store';
 import TabTitle from '@/components/tab-title';
 import { formatter } from '@/helpers/helpers';
 import { ProgressiveImage } from '@/components/image-progressive-loading';
+import * as ImagePicker from 'expo-image-picker';
+import { Button } from 'react-native-paper';
 
 type Props = {};
 
@@ -29,31 +32,15 @@ const Profile = (props: Props) => {
   //const { data, loading, error } = useLocalSession<Partial<IUser>>();
   //const user = useUsersStore((state) => state.user);
   //const isLoggedIn = useUsersStore((state) => state.isLoggedIn);
+  const [image, setImage] = React.useState<string | null>(null);
   const navigation = useNavigation();
-  const { user, isLoggedIn, logout } = useUsersStore();
+
+  const [loading, setLoading] = React.useState(false);
+
+  const { user, isLoggedIn, logout, setUser } = useUsersStore();
   const [loggingOut, setLoggingOut] = React.useState<boolean>(false);
+
   const router = useRouter();
-
-  /*  useEffect(() => {
-    // Check if navigation is focused to prevent unexpected triggers on other screens
-    const handleBackPress = (): boolean => {
-      if (navigation.isFocused()) {
-        Alert.alert('Are you sure you want to exit the app?', '', [
-          { text: 'Cancel', onPress: () => null, style: 'cancel' },
-          { text: 'YES', onPress: () => BackHandler.exitApp() },
-        ]);
-        return true; // Prevents the default back action
-      }
-      return false; // Allows normal back navigation on other screens
-    };
-
-    const backHandler: NativeEventSubscription = BackHandler.addEventListener(
-      'hardwareBackPress',
-      handleBackPress,
-    );
-
-    return () => backHandler.remove();
-  }, [navigation]); */ // Added navigation to dependency array to prevent stale closures
 
   const onLogout = async () => {
     setLoggingOut(true);
@@ -75,6 +62,72 @@ const Profile = (props: Props) => {
     }
     setLoggingOut(false);
   };
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library.
+    // Manually request permissions for videos on iOS when `allowsEditing` is set to `false`
+    // and `videoExportPreset` is `'Passthrough'` (the default), ideally before launching the picker
+    // so the app users aren't surprised by a system dialog after picking a video.
+    // See "Invoke permissions for videos" sub section for more details.
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert(
+        'Permission required',
+        'Permission to access the media library is required.',
+      );
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images', 'videos'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      // 👇 Masque l'erreur TypeScript mais envoie les propriétés au moteur Android sous-jacent
+      ...({
+        options: {
+          colors: {
+            cropToolbarColor: '#212121',
+            cropToolbarActionTextColor: '#ffffff',
+            cropToolbarIconColor: '#ffffff',
+          },
+        },
+      } as any),
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+  const updateUserProfilePicture = async (id: number, image: string) => {
+    console.log('done');
+  };
+  const onUploadProfilePicture = async () => {
+    try {
+      setLoading(true);
+      const response: any = await updateUserProfilePicture(user!.id, image!);
+      if (response.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Profile picture updated successfully',
+        });
+        setUser({ ...user, profile_picture: response.data! } as any);
+        setImage(null);
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error uploading profile picture',
+        text2: (error as Error).message,
+      });
+    }
+  };
+
   const renderUserPropertyValue = (label: string, value: string) => {
     return (
       <FlexBox>
@@ -104,7 +157,7 @@ const Profile = (props: Props) => {
           >
             <FlexBox alignItems="center" gap={15}>
               <ProgressiveImage
-                uri={user?.profile_picture!}
+                uri={image || user?.profile_picture!}
                 width={100}
                 height={100}
                 borderRadius={50}
@@ -113,9 +166,36 @@ const Profile = (props: Props) => {
                 source={{ uri: user?.profile_picture }}
                 style={{ width: 100, height: 100, borderRadius: 50 }}
               /> */}
-              <CustomButton mode="outlined" buttonColor="white">
-                <CustomText value="Change Profile Picture" fontWeight="bold" />
-              </CustomButton>
+              {!image && (
+                <CustomButton
+                  mode="outlined"
+                  buttonColor="white"
+                  onPress={pickImage}
+                >
+                  <CustomText
+                    value="Change Profile Picture"
+                    fontWeight="bold"
+                  />
+                </CustomButton>
+              )}
+              {image && (
+                <FlexBox flexDirection="row" gap={10}>
+                  <Button
+                    onPress={onUploadProfilePicture}
+                    mode="contained"
+                    style={{ borderRadius: 5 }}
+                  >
+                    Upload
+                  </Button>
+                  <Button
+                    style={{ borderRadius: 5 }}
+                    mode="outlined"
+                    onPress={() => setImage(null)}
+                  >
+                    Cancel
+                  </Button>
+                </FlexBox>
+              )}
             </FlexBox>
             <FlexBox gap={15} paddingVertical={20}>
               {renderUserPropertyValue('Name', user?.name || '')}
@@ -138,11 +218,3 @@ const Profile = (props: Props) => {
 };
 
 export default Profile;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
