@@ -48,3 +48,15 @@ export const getUserBookings = async (userId: number) => {
   return booking as IBookingWithDetails[]; // Type assertion to include room and hotel
 };
 
+export const getUserBookingsReport = async (userId: number) => {
+  // Select all rows and columns from the hotel table
+  const { data: booking, error: dbError } = await supabase
+    .from('bookings')
+    .select('id, check_in_date, check_out_date, status, total_amount')
+    .eq('customer_id', userId)
+    .neq('status', 'cancelled')
+    .order('created_at', { ascending: false });
+
+  if (dbError) throw dbError; // Strictly throw to notify TanStack Query
+  return booking; // Type assertion to include room and hotel
+};

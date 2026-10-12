@@ -1,6 +1,8 @@
 import { supabase } from '@/api/supabase-config';
 import { IUser } from '@/interfaces';
-export const registerUser = async (payload: Partial<IUser>) => {
+export const registerUser = async (
+  payload: Partial<IUser> & { password: string },
+) => {
   try {
     // step 1 : create authentication record
     const authResponse = await supabase.auth.signUp({
@@ -36,7 +38,9 @@ export const registerUser = async (payload: Partial<IUser>) => {
   }
 };
 
-export const loginUser = async (payload: Partial<IUser>) => {
+export const loginUser = async (
+  payload: Partial<IUser> & { password: string },
+) => {
   try {
     // step 1 : authenticate user
     const authResponse = await supabase.auth.signInWithPassword({
@@ -151,6 +155,52 @@ export const logoutUser = async () => {
     return {
       success: false,
       message: (error as Error).message || 'Failed login out',
+    };
+  }
+};
+export const updateUserProfilePicture = async (
+  userId: number,
+  image: string,
+) => {
+  try {
+    // step 1 : convert the image to file / blob object (VVIP step in React Native)
+    const response = await fetch(image);
+    const blob = await response.blob();
+    const arrayBuffer = await new Response(blob).arrayBuffer();
+
+    const uniqueFileName = `profile_pictures/${userId}_${Date.now()}.jpg`;
+    //because we have a bucket storage named   "main" in supabase
+    const { data, error: uploadError } = await supabase.storage
+      .from('main')
+      .upload(uniqueFileName, arrayBuffer);
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    const { data: publicURLData } = supabase.storage
+      .from('main')
+      .getPublicUrl(uniqueFileName);
+    const publicURL = publicURLData.publicUrl;
+
+    const { error: updateError } = await supabase
+      .from('user_profiles')
+      .update({ profile_picture: publicURL })
+      .eq('id', userId);
+
+    if (updateError) {
+      throw updateError;
+    }
+
+    return {
+      success: true,
+      message: 'Profile picture updated successfully',
+      data: publicURL,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: (error as Error).message || 'Failed to update profile picture',
     };
   }
 };

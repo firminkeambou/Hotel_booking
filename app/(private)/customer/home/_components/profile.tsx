@@ -17,7 +17,7 @@ import FlexBox from '@/components/flexbox';
 import CustomText from '@/components/custom-text';
 import CustomButton from '@/components/custom-button';
 import LoadingModal from '@/components/modal-spinner';
-import { logoutUser } from '@/services/users';
+import { logoutUser, updateUserProfilePicture } from '@/services/users';
 import Toast from 'react-native-toast-message';
 import { useUsersStore } from '@/store-zustand/users-store';
 import TabTitle from '@/components/tab-title';
@@ -85,7 +85,7 @@ const Profile = (props: Props) => {
       aspect: [4, 3],
       quality: 1,
       // 👇 Masque l'erreur TypeScript mais envoie les propriétés au moteur Android sous-jacent
-      ...({
+      /* ...({
         options: {
           colors: {
             cropToolbarColor: '#212121',
@@ -93,7 +93,7 @@ const Profile = (props: Props) => {
             cropToolbarIconColor: '#ffffff',
           },
         },
-      } as any),
+      } as any), */
     });
 
     console.log(result);
@@ -102,9 +102,7 @@ const Profile = (props: Props) => {
       setImage(result.assets[0].uri);
     }
   };
-  const updateUserProfilePicture = async (id: number, image: string) => {
-    console.log('done');
-  };
+
   const onUploadProfilePicture = async () => {
     try {
       setLoading(true);
@@ -179,16 +177,16 @@ const Profile = (props: Props) => {
                 </CustomButton>
               )}
               {image && (
-                <FlexBox flexDirection="row" gap={10}>
+                <FlexBox flexDirection="row" gap={20}>
                   <Button
                     onPress={onUploadProfilePicture}
                     mode="contained"
-                    style={{ borderRadius: 5 }}
+                    style={{ borderRadius: 10 }}
                   >
                     Upload
                   </Button>
                   <Button
-                    style={{ borderRadius: 5 }}
+                    style={{ borderRadius: 10 }}
                     mode="outlined"
                     onPress={() => setImage(null)}
                   >

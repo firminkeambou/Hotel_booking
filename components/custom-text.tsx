@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 import React from 'react';
 import { normaliseUnit } from '@/helpers/helpers';
+import type { ColorValue } from 'react-native';
 interface CustomTextProps {
   value: string | undefined;
   fontSize?: number;
@@ -15,7 +16,7 @@ interface CustomTextProps {
     | '500'
     | '600'
     | '100';
-  fontColor?: string;
+  fontColor?: ColorValue;
   textAlign?: 'left' | 'right' | 'center' | 'justify' | 'auto';
 }
 

@@ -4,10 +4,12 @@ import FlexBox from './flexbox';
 import CustomText from './custom-text';
 import { PRIMARY_COLOR } from '@/constants';
 import { normaliseUnit } from '@/helpers/helpers';
-
+import type { ColorValue } from 'react-native';
 interface TabTitleProps {
   title: string;
   caption?: string;
+  size?: number;
+  fontColor?: ColorValue;
 }
 
 const TabTitle = (props: TabTitleProps) => {
@@ -15,9 +17,9 @@ const TabTitle = (props: TabTitleProps) => {
     <FlexBox gap={3} paddingVertical={10}>
       <CustomText
         value={props.title}
-        fontSize={normaliseUnit(25)}
+        fontSize={normaliseUnit(props.size) ?? normaliseUnit(25)}
         fontWeight="bold"
-        fontColor={PRIMARY_COLOR}
+        fontColor={props.fontColor ?? PRIMARY_COLOR}
       />
       {props.caption && (
         <CustomText

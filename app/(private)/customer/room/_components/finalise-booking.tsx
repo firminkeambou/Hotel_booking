@@ -11,7 +11,6 @@ import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { useStripe } from '@stripe/stripe-react-native';
 import { saveBooking } from '@/services/bookings';
-
 type Props = {
   room: IRoom;
   isRoomAvailable: boolean;
